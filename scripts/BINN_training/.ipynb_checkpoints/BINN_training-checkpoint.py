@@ -8,12 +8,10 @@ import src.Modules.Loaders.DataFormatter as DF
 
 from src.BINNs_training import BINN_training
 from src.BINNs_model_selection import model_selection
-from simulate_binn_PDEs import simulate_binn_DE
+from src.simulate_binn_PDEs import simulate_binn_DE
 from src.get_params import get_pulling_params, get_adhesion_params, get_adhesion_params_Padh_interpolation_Pm_fixed, get_adhesion_params_Pm_Padh_interpolation, get_heterog_params, get_heterog_LHC_params
 
-#from src.custom_functions import to_torch, to_numpy
-
-device = torch.device(GetLowestGPU(pick_from=[0,1,2,3]))
+device = torch.device(GetLowestGPU(pick_from=[0]))
 
 if __name__ == '__main__':
 
@@ -30,8 +28,6 @@ if __name__ == '__main__':
     - The script saves timing information for model training, performs model selection over 5 trained BINN models. and simulates the final BINN-guided PDE from the selected BINN model.
     """
     
-    scenario = "Pulling"
-    
     path = '../../data/'
     
     #BINN_model = 'DMLP'
@@ -39,44 +35,56 @@ if __name__ == '__main__':
     pde_weight = 1e4
     n = 25
     
-    model_name = "simple_pulling"
-    #model_name = "simple_adhesion"
-    #model_name = "adhesion_pulling"
-    #model_name = "adhesion_pulling_LHC"
-    #model_name = "simple_adhesion_Padh_interp"
-    #model_name = "simple_adhesion_Pm_Padh_interp"
+    scenario = "simple_pulling"
+    #scenario = "simple_adhesion"
+    #scenario = "adhesion_pulling"
+    #scenario = "adhesion_pulling_LHC"
+    #scenario = "simple_adhesion_Padh_interp"
+    #scenario = "simple_adhesion_Pm_Padh_interp"
 
-    if model_name == "simple_pulling":
-        params = get_pulling_params()
-        Pm, Ppull = params[int(sys.argv[1]),:]
+    if scenario == "simple_pulling":
+        paramsAll = get_pulling_params()
+        Pm, Ppull = paramsAll[int(sys.argv[1])]
         file_name = f'simple_pulling_mean_{n}_Pm_{Pm}_Ppull_{Ppull}'
         
-    elif model_name == "simple_adhesion":
-        params = get_adhesion_params()
-        Pm, Padh = params[int(sys.argv[1]),:]
+        params = (Pm,Ppull)
+        
+    elif scenario == "simple_adhesion":
+        paramsAll = get_adhesion_params()
+        Pm, Padh = paramsAll[int(sys.argv[1])]
         file_name = f'simple_adhesion_mean_{n}_Pm_{Pm}_Padh_{Padh}'
         
-    elif model_name == "adhesion_pulling":
-        params = get_heterog_params()
-        PmH, PmP, Padh, Ppull, alpha = np.round(params[int(sys.argv[1]),:],3)
+        params = (Pm,Padh)
+        
+    elif scenario == "adhesion_pulling":
+        paramsAll = get_heterog_params()
+        PmH, PmP, Padh, Ppull, alpha = np.round(paramsAll[int(sys.argv[1])],3)
 
         file_name = f'adhesion_pulling_mean_{n}_PmH_{PmH}_PmP_{PmP}_Padh_{Padh}_Ppull_{Ppull}_alpha_{alpha}'
         
-    elif model_name == "adhesion_pulling_LHC":
-        params = get_heterog_LHC_params("Training")
+        params = (PmH, PmP, Padh, Ppull, alpha)
+        
+    elif scenario == "adhesion_pulling_LHC":
+        paramsAll = get_heterog_LHC_params("Training")
+        PmH, PmP, Padh, Ppull, alpha = np.round(paramsAll[int(sys.argv[1])],3)
+        
         file_name = f'adhesion_pulling_mean_{n}_PmH_{PmH}_PmP_{PmP}_Padh_{Padh}_Ppull_{Ppull}_alpha_{alpha}'
+        
+        params = (PmH, PmP, Padh, Ppull, alpha)
 
-    elif model_name == "simple_adhesion_Pm_Padh_interp":
+    elif scenario == "simple_adhesion_Pm_Padh_interp":
         seed_init = 500
 
-        params = []
-        params_tmp = get_adhesion_params_Pm_Padh_interpolation("old")
+        paramsAll = []
+        paramsAll_tmp = get_adhesion_params_Pm_Padh_interpolation("old")
         ### Remove params already computed with "adhesion"
-        for param in params_tmp:
+        for param in paramsAll_tmp:
             if param[0] != 1.0:
-                params.append(param)
-        Pm, Padh = params[int(sys.argv[1]),:]
+                paramsAll.append(param)
+        Pm, Padh = paramsAll[int(sys.argv[1])]
         file_name = f'simple_adhesion_mean_{n}_Pm_{Pm}_Padh_{Padh}'
+        
+        params = (Pm,Ppull)
         
     #load data
     inputs, outputs, shape = DF.load_ABM_data(path+file_name+".npy", plot=False)
@@ -99,7 +107,7 @@ if __name__ == '__main__':
         binn.to(device)
     
         t0 = time.time()
-        binn,model = BINN_training(inputs_training, outputs_training, binn, f"{name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}",device)
+        binn,model = BINN_training(inputs_training, outputs_training, binn, f"{name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}")
         tf = time.time() - t0
         
         #record time to train model
@@ -107,7 +115,7 @@ if __name__ == '__main__':
                {'time':tf})
 
     #model selection for the selected BINN model
-    model_selection(params, scenario = model_name, pde_weight=pde_weight, n=n)
+    model_selection(params, scenario = scenario)
 
     #Simualate the BINN-guided PDE for the selected BINN model    
-    simulate_binn_DE(params,model_name)
+    simulate_binn_DE(params,scenario)
