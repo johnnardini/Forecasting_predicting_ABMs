@@ -4,7 +4,7 @@ from src.Modules.Utils.Imports import *
 from src.Modules.Models.BuildBINNs import BINN
 from src.Modules.Utils.ModelWrapper import ModelWrapper
 from src.Modules.Utils.Gradient import Gradient
-#device = torch.device(GetLowestGPU(pick_from=[0,1,2,3]))
+device = torch.device(GetLowestGPU(pick_from=[0]))
 
 def unique_inputs(inputs):
     """
@@ -36,7 +36,7 @@ def MSE(a,b):
     return ((a - b)**2).mean()
 
 # helper functions
-def to_torch(x,device):
+def to_torch(x):
     """
     Convert a NumPy array to a PyTorch tensor and move it to the specified device.
 
