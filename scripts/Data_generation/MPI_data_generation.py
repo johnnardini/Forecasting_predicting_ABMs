@@ -4,18 +4,28 @@ import numpy as np
 from src.get_params import get_heterog_params, get_pulling_params, get_adhesion_params, get_heterog_LHC_params, get_adhesion_params_Padh_interpolation_Pm_fixed, get_adhesion_params_Pm_Padh_interpolation, get_heterog_LHC_params_vary_Padh_Ppull_alpha
 from src.ABM_package import simulate_heterogeneous_ABM, migration_reaction_step_adhesion_pulling, migration_step_pulling, migration_step_adhesion, simulate_nonlinear_migration_ABM
 
+"""
+    This script generates data from the Pulling ABM, Adhesion ABM, and Pulling & Adhesion ABM.
+    - When model_name = "simple_pulling", we generate ABM simulations for forecasting the Pulling ABM
+    - When model_name = "simple_adhesion", we generate ABM simulations for forecasting the Adhesion ABM
+    - When model_name = "adhesion_pulling", we generate ABM simulations for forecasting the Pulling & Adhesion ABM
+    - When model_name = "simple_adhesion_Padh_interp", we generate ABM simulations for predicting the Adhesion ABM as Padh varies and Pm is fixed
+    - When model_name = "simple_adhesion_Pm_Padh_interp", we generate ABM simulations for predicting the Adhesion ABM as Pm and Padh vary
+    - When model_name = "adhesion_pulling_LHC", we generate ABM simulations for predicting the Pulling & Adhesion ABM as rmH and rmP are fixed and Padh, Ppull, and alpha are varied.
+    """
+
 comm = MPI.COMM_WORLD
 size = comm.Get_size() # new: gives number of ranks in comm
 rank = comm.Get_rank()
 
-#model_name = "pulling"
+model_name = "simple_pulling"
 #model_name = "adhesion"
 #model_name = "adhesion_pulling"
-model_name = "adhesion_pulling_LHC"
+#model_name = "adhesion_pulling_LHC"
 #model_name = "adhesion_Padh_interp"
 #model_name = "adhesion_Pm_Padh_interp"
 
-if model_name == "pulling":
+if model_name == "simple_pulling":
     params = get_pulling_params()
     seed_init = 0
 elif model_name == "adhesion":
@@ -73,9 +83,9 @@ for p in paramsRank:
     
     np.random.seed(seed_init+2*rank+count)
    
-    if model_name == "pulling":
+    if model_name == "simple_pulling":
         simulate_nonlinear_migration_ABM(p,migration_step_pulling, "pulling",n=25)
-    elif model_name in ["adhesion","adhesion_Padh_interp","adhesion_Pm_Padh_interp"]:
+    elif model_name in ["simple_adhesion","simple_adhesion_Padh_interp","simple_adhesion_Pm_Padh_interp"]:
         simulate_nonlinear_migration_ABM(p,migration_step_adhesion, "adhesion",n=25)
     elif model_name in ["adhesion_pulling", "adhesion_pulling_LHC"]:
         simulate_heterogeneous_ABM(p,

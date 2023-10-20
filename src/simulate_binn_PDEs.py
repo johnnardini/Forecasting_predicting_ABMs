@@ -1,6 +1,5 @@
 import sys, importlib, time
 sys.path.append('../../')
-#sys.path.append('../../src/')
 
 from src.Modules.Utils.Imports import *
 from src.Modules.Models.BuildBINNs import BINN
