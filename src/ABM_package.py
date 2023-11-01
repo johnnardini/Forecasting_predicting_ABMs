@@ -589,7 +589,7 @@ def simulate_nonlinear_migration_ABM(params, migration_rules, interaction_string
     data['T'] = T
     data['C'] = C_mean
     data['time_all'] = computationTimeAllFinal
-    np.save(f"../../data/simple_{interaction_string}_mean_{n}_Pm_{Pm}_Pp_{Pp}_{Pint_string}_{Pint}.npy",data)  
+    np.save(f"../../data/simple_{interaction_string}_mean_{n}_Pm_{Pm}_{Pint_string}_{Pint}.npy",data)  
     
 def simulate_heterogeneous_ABM(params, migration_rules, T_end = 1000.0, n=5):
     
@@ -669,4 +669,4 @@ def simulate_heterogeneous_ABM(params, migration_rules, T_end = 1000.0, n=5):
     data['T'] = T
     data['C'] = C_mean
 
-    np.save(f"../../data/adhesion_pulling_mean_{n}_PmH_{PmH}_PmP_{PmP}_Pp_{Pp}_Padh_{Padh}_Ppull_{Ppull}_alpha_{alpha}.npy",data)    
+    np.save(f"../../data/adhesion_pulling_mean_{n}_PmH_{PmH}_PmP_{PmP}_Padh_{Padh}_Ppull_{Ppull}_alpha_{alpha}.npy",data)    
