@@ -105,7 +105,7 @@ def D_HP(H, P, T, q):
         dH/dt = \nabla\cdot( D_HH \nabla H + D_HP \nabla P + D_HT \nabla T )
     - This function computes D_HP
     """
-    return q[1]*( -q[3]*((1-T)*H) )
+    return -q[1]*q[3]*(1-T)*H
 
 def D_HT(H, P, T, q):
     """
@@ -153,7 +153,7 @@ def D_PH(H, P, T, q):
         dH/dt = \nabla\cdot( D_PH \nabla H + D_PP \nabla P + D_PT \nabla T )
     - This function computes D_PH
     """
-    return q[1]*( -3*q[2]*P*(1-T) )
+    return -q[1]*q[2]*(3*P*(1-T))
 
 def D_PP(H, P, T, q):
     """
@@ -178,7 +178,7 @@ def D_PP(H, P, T, q):
     - This function computes D_PP
     """
     
-    return q[1]*( 1-T - q[2]*H*(1-T) )
+    return q[1]*(1-T) - q[1]*q[2]*H*(1-T)
 
 def D_PT(H, P, T, q):
     """
@@ -202,7 +202,7 @@ def D_PT(H, P, T, q):
         dH/dt = \nabla\cdot( D_PH \nabla H + D_PP \nabla P + D_PT \nabla T )
     - This function computes D_PT
     """
-    return q[1]*( P - q[2]*H*P + 3*q[3]*P**2 )
+    return q[1]*P - q[1]*q[2]*H*P + 3*q[1]*q[3]*P**2
 
 
 def Diffusion_eqn(u,t,x,q,diffusion_function):
