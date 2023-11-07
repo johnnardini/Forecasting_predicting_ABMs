@@ -2,8 +2,6 @@
 
 Forecasting and predicting ABMs with BINNs README file
 
-This README file supplements the publicly available code on Github. 
-
 System Requirements:
 ====================
 * Python 3

@@ -2,8 +2,6 @@
 
 Forecasting and predicting ABMs with BINNs README file
 
-This README file supplements the publicly available code on Github. 
-
 System Requirements:
 ====================
 * Python 3
@@ -13,7 +11,7 @@ System Requirements:
 
 Installation:
 =============
-Following [The Good Research Code Handbook](https://goodresearch.dev/setup), you can use pip to install the `src` package for this project. Once you have downloaded this code, you can install this package in the 'src/' directory by entering 
+Following [The Good Research Code Handbook](https://goodresearch.dev/setup), you can use pip to install the `src` package for this project. Once you have downloaded this code, you can install this package in the `src/`` directory by entering 
 ```
 pip install -e .
 ```
