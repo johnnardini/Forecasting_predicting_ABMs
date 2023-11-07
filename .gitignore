@@ -1,2 +1,4 @@
 *scratch*
 scripts/presentation_figs/*
+.ipynb_checkpoints/*
+*.ipynb_checkpoints/*
