@@ -7,7 +7,7 @@ python BINN_training.py i
 
 Note that inside of `BINN_training.py`, we generate `params`, a list of parameter values. The variable `i` selects that we train the BINN to the parameter values `params[i]`.
 
-The ABM that is simulated in the code depends on the variable `model_name`<br> (see lines 38-43)
+The ABM that is simulated in the code depends on the variable `model_name` (see lines 38-43)<br>
     * When `model_name` = "simple_pulling", we generate ABM simulations for forecasting the Pulling ABM<br>
     * When `model_name` = "simple_adhesion", we generate ABM simulations for forecasting the Adhesion ABM<br>
     * When `model_name` = "adhesion_pulling", we generate ABM simulations for forecasting the Pulling & Adhesion ABM<br>

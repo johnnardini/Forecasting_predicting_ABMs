@@ -5,7 +5,7 @@ from a shell script with the command
 mpirun python MPI_data_generation.py
 ```
 
-The ABM that is simulated in the code depends on the variable `model_name`<br> (see lines 21-26)
+The ABM that is simulated in the code depends on the variable `model_name` (see lines 21-26)<br>
     * When `model_name` = "simple_pulling", we generate ABM simulations for forecasting the Pulling ABM<br>
     * When `model_name` = "simple_adhesion", we generate ABM simulations for forecasting the Adhesion ABM<br>
     * When `model_name` = "adhesion_pulling", we generate ABM simulations for forecasting the Pulling & Adhesion ABM<br>
