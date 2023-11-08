@@ -11,7 +11,7 @@ System Requirements:
 
 Installation:
 =============
-Following [The Good Research Code Handbook](https://goodresearch.dev/setup), you can use pip to install the `src` package for this project. Once you have downloaded this code, you can install this package in the `src/`` directory by entering 
+Following [The Good Research Code Handbook](https://goodresearch.dev/setup), you can use pip to install the `src` package for this project. Once you have downloaded this code, you can install this package in the main directory directory by entering 
 ```
 pip install -e .
 ```
@@ -23,7 +23,6 @@ See the README.md files in `scripts/Data_generation` and `scripts/BINN_training/
 ABM forecasting and prediction:
 ===============================
 ABM forecasting and prediction can be performed by running the jupyter notebooks located in `scripts/Forecasting/` and `scripts/predicting/`, respectively.
-
 
 Contact:
 ========
