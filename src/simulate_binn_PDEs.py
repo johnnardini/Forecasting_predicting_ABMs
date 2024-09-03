@@ -98,7 +98,7 @@ def simulate_binn_DE(params,scenario):
         data['Pm'] = Pm
         data['Pint'] = Pinteraction
     elif "adhesion_pulling" in scenario:
-        PmH, PmP, Pp, Padh, Ppull, alpha
+        
         data['PmH'] = PmH
         data['PmP'] = PmP        
         data['Padh'] = Padh        

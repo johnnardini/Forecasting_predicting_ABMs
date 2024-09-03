@@ -9,7 +9,7 @@ import src.Modules.Loaders.DataFormatter as DF
 
 device = torch.device(GetLowestGPU(pick_from=[0]))
 
-from src.DE_simulation import fickian_diffusion, Reaction_Diffusion_eqn, simple_pulling_diffusion, simple_adhesion_diffusion, logistic_proliferation, no_proliferation
+from src.DE_simulation import fickian_diffusion, Diffusion_eqn, simple_pulling_diffusion, simple_adhesion_diffusion
 from scipy.integrate import odeint
 from src.custom_functions import load_model, recover_binn_params, unique_inputs
 from src.DE_simulation import DE_sim
@@ -63,7 +63,7 @@ def data_splitting(inputs,outputs,x,t,perc=0.75):
     
     return t_train, t_test, U_train, U_test
 
-def DE_sim_train_test(x, t, IC, Diffusion_function, Growth_function):
+def DE_sim_train_test(x, t, IC, Diffusion_function):
     
     """
     Simulate a reaction-diffusion system and split the results into training and testing data.
@@ -83,9 +83,14 @@ def DE_sim_train_test(x, t, IC, Diffusion_function, Growth_function):
     
     tmax = np.max(t)
     
-    sol = odeint(Reaction_Diffusion_eqn, IC, t, args=(x, [], [], 
-                                                      Diffusion_function, Growth_function))
-    sol = sol.T
+    #sol = odeint(Diffusion_eqn, IC, t, args=(x, [], Diffusion_function))
+    #sol = sol.T
+    
+    sol = DE_sim(x, 
+                 t, 
+                 [], 
+                 IC, 
+                 Diffusion_function = Diffusion_function)
     sol_train = sol[:,t<=.75*tmax]
     sol_test  = sol[:,t >.75*tmax]
     
@@ -171,8 +176,7 @@ def model_selection(params, scenario, perc=0.75):
         sol_binn_train, sol_binn_test = DE_sim_train_test(x, 
                                                 t,
                                                 IC, 
-                                                Diffusion_function = D_binn,
-                                                Growth_function = G_binn)
+                                                Diffusion_function = D_binn)
 
         MSE_binn_train.append(np.linalg.norm(sol_binn_train - U_train))
         count+=1

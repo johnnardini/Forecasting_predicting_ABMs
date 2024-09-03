@@ -1,7 +1,10 @@
 from mpi4py import MPI
 import numpy as np
 
-from src.get_params import get_heterog_params, get_pulling_params, get_adhesion_params, get_heterog_LHC_params, get_adhesion_params_Padh_interpolation_Pm_fixed, get_adhesion_params_Pm_Padh_interpolation, get_heterog_LHC_params_vary_Padh_Ppull_alpha
+import sys
+sys.path.append('../../')
+
+from src.get_params import get_heterog_params, get_pulling_params, get_adhesion_params, get_heterog_LHC_params, get_adhesion_params_Padh_interpolation_Pm_fixed, get_adhesion_params_Pm_Padh_interpolation
 from src.ABM_package import simulate_heterogeneous_ABM, migration_reaction_step_adhesion_pulling, migration_step_pulling, migration_step_adhesion, simulate_nonlinear_migration_ABM
 
 """
@@ -24,6 +27,7 @@ model_name = "simple_pulling"
 #model_name = "adhesion_pulling_LHC"
 #model_name = "adhesion_Padh_interp"
 #model_name = "adhesion_Pm_Padh_interp"
+#model_name = "adhesion_pulling_base"
 
 if model_name == "simple_pulling":
     params = get_pulling_params()
@@ -57,6 +61,18 @@ elif model_name == "adhesion_Pm_Padh_interp":
     params2 = get_adhesion_params_Pm_Padh_interpolation("new")
     params  = params1 + params2
     
+elif model_name == "adhesion_pulling_base":
+    
+    seed_init = 600
+    
+    rmhBase = 0.25
+    rmpBase = 1.0
+    PadhBase = 0.33
+    PpullBase = 0.33
+    alphaBase = 0.5
+    
+    params = [(rmhBase, rmpBase, PadhBase, PpullBase, alphaBase)]
+    
 N = len(params)
 numDataPerRank = int(np.ceil(N/size))
 
@@ -87,7 +103,7 @@ for p in paramsRank:
         simulate_nonlinear_migration_ABM(p,migration_step_pulling, "pulling",n=25)
     elif model_name in ["simple_adhesion","simple_adhesion_Padh_interp","simple_adhesion_Pm_Padh_interp"]:
         simulate_nonlinear_migration_ABM(p,migration_step_adhesion, "adhesion",n=25)
-    elif model_name in ["adhesion_pulling", "adhesion_pulling_LHC"]:
+    elif model_name in ["adhesion_pulling", "adhesion_pulling_LHC", "adhesion_pulling_base"]:
         simulate_heterogeneous_ABM(p,
                                    migration_reaction_step_adhesion_pulling,
                                    n=25)  

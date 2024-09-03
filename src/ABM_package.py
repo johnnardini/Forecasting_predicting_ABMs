@@ -626,6 +626,7 @@ def simulate_heterogeneous_ABM(params, migration_rules, T_end = 1000.0, n=5):
     
     #Initialize list containing all individual simulations
     Cs = []
+    compartments = []
     #Initialize dictionary storing all saved information
     data = {}
     #Used to track computation time

@@ -41,6 +41,7 @@ if __name__ == '__main__':
     #scenario = "adhesion_pulling_LHC"
     #scenario = "simple_adhesion_Padh_interp"
     #scenario = "simple_adhesion_Pm_Padh_interp"
+    #scenario = "adhesion_pulling_base"
 
     if scenario == "simple_pulling":
         paramsAll = get_pulling_params()
@@ -73,8 +74,6 @@ if __name__ == '__main__':
         params = (PmH, PmP, Padh, Ppull, alpha)
 
     elif scenario == "simple_adhesion_Pm_Padh_interp":
-        seed_init = 500
-
         paramsAll = []
         paramsAll_tmp = get_adhesion_params_Pm_Padh_interpolation("old")
         ### Remove params already computed with "adhesion"
@@ -86,36 +85,49 @@ if __name__ == '__main__':
         
         params = (Pm,Ppull)
         
-    #load data
-    inputs, outputs, shape = DF.load_ABM_data(path+file_name+".npy", plot=False)
-    x = np.unique(inputs[:,0])
-    t = np.unique(inputs[:,1])
-    tmax = np.max(t)
+    elif scenario == "adhesion_pulling_base":
     
-    #train on first 75% of timepoints
-    t_upper_lim = .75*tmax
-    t_training_index = (t <= t_upper_lim)
-    t_train = t[t_training_index]
-    
-    training_index = inputs[:,1]<=t_upper_lim
-    inputs_training = inputs[training_index,:]
-    outputs_training = outputs[training_index,:]
+        rmh = 0.25
+        rmp = 1.0
+        Padh = 0.33
+        Ppull = 0.33
+        alpha = 0.5
 
-    for i in np.arange(5):
-        # initialize model
-        binn = BINN(name,x,t_train,pde_weight=pde_weight)
-        binn.to(device)
-    
-        t0 = time.time()
-        binn,model = BINN_training(inputs_training, outputs_training, binn, f"{name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}")
-        tf = time.time() - t0
+        params = (rmh, rmp, Padh, Ppull, alpha)
         
-        #record time to train model
-        np.save(f"../../results/timing/ {name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}.npy",
-               {'time':tf})
+        file_name = f'adhesion_pulling_mean_{n}_PmH_{rmh}_PmP_{rmp}_Padh_{Padh}_Ppull_{Ppull}_alpha_{alpha}'
 
-    #model selection for the selected BINN model
-    model_selection(params, scenario = scenario)
+        
+#     #load data
+#     inputs, outputs, shape = DF.load_ABM_data(path+file_name+".npy", plot=False)
+#     x = np.unique(inputs[:,0])
+#     t = np.unique(inputs[:,1])
+#     tmax = np.max(t)
+    
+#     #train on first 75% of timepoints
+#     t_upper_lim = .75*tmax
+#     t_training_index = (t <= t_upper_lim)
+#     t_train = t[t_training_index]
+    
+#     training_index = inputs[:,1]<=t_upper_lim
+#     inputs_training = inputs[training_index,:]
+#     outputs_training = outputs[training_index,:]
+
+#     for i in np.arange(5):
+#         # initialize model
+#         binn = BINN(name,x,t_train,pde_weight=pde_weight)
+#         binn.to(device)
+    
+#         t0 = time.time()
+#         binn,model = BINN_training(inputs_training, outputs_training, binn, f"{name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}")
+#         tf = time.time() - t0
+        
+#         #record time to train model
+#         np.save(f"../../results/timing/ {name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}.npy",
+#                {'time':tf})
+
+#     #model selection for the selected BINN model
+#     model_selection(params, scenario = scenario)
 
     #Simualate the BINN-guided PDE for the selected BINN model    
     simulate_binn_DE(params,scenario)
