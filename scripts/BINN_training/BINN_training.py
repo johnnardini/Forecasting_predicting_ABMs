@@ -98,36 +98,36 @@ if __name__ == '__main__':
         file_name = f'adhesion_pulling_mean_{n}_PmH_{rmh}_PmP_{rmp}_Padh_{Padh}_Ppull_{Ppull}_alpha_{alpha}'
 
         
-#     #load data
-#     inputs, outputs, shape = DF.load_ABM_data(path+file_name+".npy", plot=False)
-#     x = np.unique(inputs[:,0])
-#     t = np.unique(inputs[:,1])
-#     tmax = np.max(t)
+    #load data
+    inputs, outputs, shape = DF.load_ABM_data(path+file_name+".npy", plot=False)
+    x = np.unique(inputs[:,0])
+    t = np.unique(inputs[:,1])
+    tmax = np.max(t)
     
-#     #train on first 75% of timepoints
-#     t_upper_lim = .75*tmax
-#     t_training_index = (t <= t_upper_lim)
-#     t_train = t[t_training_index]
+    #train on first 75% of timepoints
+    t_upper_lim = .75*tmax
+    t_training_index = (t <= t_upper_lim)
+    t_train = t[t_training_index]
     
-#     training_index = inputs[:,1]<=t_upper_lim
-#     inputs_training = inputs[training_index,:]
-#     outputs_training = outputs[training_index,:]
+    training_index = inputs[:,1]<=t_upper_lim
+    inputs_training = inputs[training_index,:]
+    outputs_training = outputs[training_index,:]
 
-#     for i in np.arange(5):
-#         # initialize model
-#         binn = BINN(name,x,t_train,pde_weight=pde_weight)
-#         binn.to(device)
+    for i in np.arange(5):
+        # initialize model
+        binn = BINN(name,x,t_train,pde_weight=pde_weight)
+        binn.to(device)
     
-#         t0 = time.time()
-#         binn,model = BINN_training(inputs_training, outputs_training, binn, f"{name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}")
-#         tf = time.time() - t0
+        t0 = time.time()
+        binn,model = BINN_training(inputs_training, outputs_training, binn, f"{name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}")
+        tf = time.time() - t0
         
-#         #record time to train model
-#         np.save(f"../../results/timing/ {name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}.npy",
-#                {'time':tf})
+        #record time to train model
+        np.save(f"../../results/timing/ {name}_training_replicate_{i}_{file_name}_pde_weight_{pde_weight}.npy",
+               {'time':tf})
 
-#     #model selection for the selected BINN model
-#     model_selection(params, scenario = scenario)
+    #model selection for the selected BINN model
+    model_selection(params, scenario = scenario)
 
     #Simualate the BINN-guided PDE for the selected BINN model    
     simulate_binn_DE(params,scenario)
